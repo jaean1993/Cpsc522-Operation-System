@@ -51,7 +51,7 @@ set_nps(unsigned int nps)
 unsigned int
 at_is_norm(unsigned int page_index)
 {
-    if(AT[page_index].perm >1 ) {
+    if(AT[page_index].perm > 1) {
         return 1;
     }
     return 0;

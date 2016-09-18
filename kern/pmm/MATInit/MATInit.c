@@ -60,8 +60,8 @@ pmem_init(unsigned int mbi_addr)
    *    That means there may be some gaps between the ranges.
    *    You should still set the permission of those pages in allocation table to 0.
    */
-    for(int i = 0;i < nps-1; i++) {
-        if (i < VM_USERLO || i >= VM_USERHI_PI) {
+    for(int i = 0;i < nps; i++) {
+        if (i < VM_USERLO_PI || i >= VM_USERHI_PI) {
             at_set_perm(i,1);
         }else{
             int contain = 0;
