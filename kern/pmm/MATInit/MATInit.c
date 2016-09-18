@@ -1,6 +1,7 @@
 #include <lib/debug.h>
 #include "import.h"
 
+
 #define PAGESIZE	4096
 #define VM_USERLO	0x40000000
 #define VM_USERHI	0xF0000000
@@ -31,7 +32,7 @@ pmem_init(unsigned int mbi_addr)
    * Hint: Think of it as the highest address possible in the ranges of the memory map table,
    *       divided by the page size.
    */
-  // TODO
+    nps = (0xFFFFFFFF / PAGESIZE);
 
 	set_nps(nps); // Setting the value computed above to NUM_PAGES.
 
@@ -59,7 +60,28 @@ pmem_init(unsigned int mbi_addr)
    *    That means there may be some gaps between the ranges.
    *    You should still set the permission of those pages in allocation table to 0.
    */
-  // TODO
+    for(int i = 0;i < nps-1; i++) {
+        if (i < VM_USERLO || i >= VM_USERHI_PI) {
+            at_set_perm(i,1);
+        }else{
+            int contain = 0;
+            for(int j = 0; j < get_size();j++) {
+              if ( is_usable(j) && get_mms(j) <= i * 4096 && (get_mms(j) + get_mml(j)) > (i+1)*4096)
+              {
+                contain = 1;
+                break;
+              }
+            }
+            if (contain == 1) {
+                at_set_perm(i,2);
+            }else{
+                at_set_perm(i,0);
+            }
+        }
+        
+    }
+    
+    
 }
 
 
