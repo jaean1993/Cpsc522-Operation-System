@@ -1,0 +1,110 @@
+obj/kern/dev/video.o: kern/dev/video.c kern/lib/string.h kern/lib/types.h \
+ kern/lib/x86.h kern/lib/types.h kern/lib/debug.h kern/lib/stdarg.h \
+ kern/dev/video.h
+obj/kern/vmm/MPTKern/test.o: kern/vmm/MPTKern/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MContainer/export.h kern/vmm/MPTOp/export.h \
+ kern/vmm/MPTKern/export.h
+obj/user/lib/debug.o: user/lib/debug.c user/include/stdarg.h \
+ user/include/stdio.h user/include/syscall.h
+obj/proc/dummy/dummy.o: user/proc/dummy/dummy.c user/include/stdio.h \
+ user/include/stdarg.h user/include/types.h user/include/gcc.h
+obj/kern/vmm/MPTComm/test.o: kern/vmm/MPTComm/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MContainer/export.h kern/vmm/MPTOp/export.h \
+ kern/vmm/MPTComm/export.h
+obj/kern/init/entry.o: kern/init/entry.S
+obj/kern/vmm/MPTComm/MPTComm.o: kern/vmm/MPTComm/MPTComm.c kern/lib/x86.h \
+ kern/lib/types.h kern/vmm/MPTComm/import.h
+obj/kern/init/init.o: kern/init/init.c kern/lib/debug.h kern/lib/stdarg.h \
+ kern/lib/types.h kern/lib/monitor.h kern/vmm/MPTInit/export.h \
+ kern/vmm/MPTKern/export.h
+obj/user/lib/printfmt.o: user/lib/printfmt.c user/include/types.h \
+ user/include/gcc.h user/include/stdarg.h user/include/string.h \
+ user/include/stdio.h
+obj/kern/vmm/MPTIntro/MPTIntro.o: kern/vmm/MPTIntro/MPTIntro.c \
+ kern/lib/gcc.h kern/lib/x86.h kern/lib/types.h kern/lib/debug.h \
+ kern/lib/stdarg.h kern/vmm/MPTIntro/import.h
+obj/kern/vmm/MPTOp/test.o: kern/vmm/MPTOp/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/vmm/MPTOp/export.h
+obj/user/lib/entry.o: user/lib/entry.S
+obj/kern/lib/string.o: kern/lib/string.c kern/lib/string.h \
+ kern/lib/types.h
+obj/kern/pmm/MATInit/MATInit.o: kern/pmm/MATInit/MATInit.c \
+ kern/lib/debug.h kern/lib/stdarg.h kern/pmm/MATInit/import.h
+obj/kern/lib/monitor.o: kern/lib/monitor.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/lib/types.h kern/lib/gcc.h kern/lib/string.h \
+ kern/lib/types.h kern/lib/x86.h kern/lib/monitor.h kern/dev/console.h
+obj/kern/pmm/MContainer/MContainer.o: kern/pmm/MContainer/MContainer.c \
+ kern/lib/debug.h kern/lib/stdarg.h kern/lib/x86.h kern/lib/types.h \
+ kern/pmm/MContainer/import.h
+obj/kern/lib/trap.o: kern/lib/trap.c kern/lib/string.h kern/lib/types.h \
+ kern/lib/trap.h kern/lib/debug.h kern/lib/stdarg.h kern/lib/x86.h \
+ kern/lib/types.h kern/dev/intr.h
+obj/kern/vmm/MPTIntro/test.o: kern/vmm/MPTIntro/test.c kern/lib/x86.h \
+ kern/lib/types.h kern/lib/debug.h kern/lib/stdarg.h \
+ kern/vmm/MPTIntro/export.h
+obj/kern/pmm/MATOp/MATOp.o: kern/pmm/MATOp/MATOp.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MATOp/import.h
+obj/kern/lib/elf.o: kern/lib/elf.c kern/lib/debug.h kern/lib/stdarg.h \
+ kern/lib/elf.h kern/lib/types.h kern/lib/string.h kern/lib/types.h \
+ kern/lib/x86.h kern/lib/pmap.h kern/lib/gcc.h
+obj/kern/lib/printfmt.o: kern/lib/printfmt.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/lib/stdarg.h kern/lib/string.h kern/lib/types.h \
+ kern/lib/types.h
+obj/kern/vmm/MPTKern/MPTKern.o: kern/vmm/MPTKern/MPTKern.c kern/lib/x86.h \
+ kern/lib/types.h kern/lib/debug.h kern/lib/stdarg.h \
+ kern/vmm/MPTKern/import.h
+obj/kern/dev/serial.o: kern/dev/serial.c kern/lib/types.h kern/lib/x86.h \
+ kern/dev/console.h kern/dev/serial.h
+obj/user/lib/string.o: user/lib/string.c user/include/string.h \
+ user/include/types.h user/include/gcc.h
+obj/kern/lib/seg.o: kern/lib/seg.c kern/lib/gcc.h kern/lib/x86.h \
+ kern/lib/types.h kern/lib/string.h kern/lib/types.h kern/lib/seg.h
+obj/kern/pmm/MATIntro/MATIntro.o: kern/pmm/MATIntro/MATIntro.c \
+ kern/lib/gcc.h
+obj/kern/dev/keyboard.o: kern/dev/keyboard.c kern/lib/types.h \
+ kern/dev/keyboard.h
+obj/kern/dev/console.o: kern/dev/console.c kern/lib/string.h \
+ kern/lib/types.h kern/lib/types.h kern/lib/debug.h kern/lib/stdarg.h \
+ kern/dev/video.h kern/dev/console.h kern/dev/serial.h \
+ kern/dev/keyboard.h
+obj/kern/pmm/MATIntro/test.o: kern/pmm/MATIntro/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MATIntro/export.h
+obj/user/lib/atoi.o: user/lib/atoi.c user/include/stdlib.h
+obj/kern/vmm/MPTOp/MPTOp.o: kern/vmm/MPTOp/MPTOp.c kern/lib/x86.h \
+ kern/lib/types.h kern/vmm/MPTOp/import.h
+obj/kern/vmm/MPTNew/test.o: kern/vmm/MPTNew/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/vmm/MPTNew/export.h
+obj/kern/dev/devinit.o: kern/dev/devinit.c kern/lib/x86.h \
+ kern/lib/types.h kern/lib/debug.h kern/lib/stdarg.h kern/lib/seg.h \
+ kern/lib/gcc.h kern/dev/console.h kern/dev/mboot.h
+obj/user/lib/printf.o: user/lib/printf.c user/include/gcc.h \
+ user/include/types.h user/include/gcc.h user/include/stdarg.h \
+ user/include/stdio.h user/include/syscall.h
+obj/kern/pmm/MContainer/test.o: kern/pmm/MContainer/test.c \
+ kern/lib/debug.h kern/lib/stdarg.h kern/pmm/MContainer/export.h
+obj/kern/lib/pmap.o: kern/lib/pmap.c kern/lib/pmap.h kern/lib/types.h \
+ kern/lib/string.h kern/lib/types.h
+obj/user/lib/fake_syscall.o: user/lib/fake_syscall.c \
+ user/include/string.h user/include/types.h user/include/gcc.h
+obj/kern/pmm/MATOp/test.o: kern/pmm/MATOp/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MATIntro/export.h kern/pmm/MATOp/export.h
+obj/kern/lib/types.o: kern/lib/types.c kern/lib/types.h
+obj/kern/lib/dprintf.o: kern/lib/dprintf.c kern/dev/console.h \
+ kern/dev/serial.h kern/lib/debug.h kern/lib/stdarg.h kern/lib/stdarg.h
+obj/kern/dev/intr.o: kern/dev/intr.c kern/lib/types.h kern/lib/debug.h \
+ kern/lib/stdarg.h kern/lib/seg.h kern/lib/gcc.h kern/lib/x86.h \
+ kern/dev/intr.h
+obj/kern/vmm/MPTInit/MPTInit.o: kern/vmm/MPTInit/MPTInit.c \
+ kern/vmm/MPTInit/import.h
+obj/kern/dev/idt.o: kern/dev/idt.S kern/dev/intr.h
+obj/kern/vmm/MPTNew/MPTNew.o: kern/vmm/MPTNew/MPTNew.c kern/lib/x86.h \
+ kern/lib/types.h kern/vmm/MPTNew/import.h
+obj/kern/dev/mboot.o: kern/dev/mboot.c kern/lib/debug.h kern/lib/stdarg.h \
+ kern/lib/x86.h kern/lib/types.h kern/lib/gcc.h kern/lib/queue.h \
+ kern/dev/mboot.h
+obj/kern/lib/debug.o: kern/lib/debug.c kern/lib/debug.h kern/lib/stdarg.h \
+ kern/lib/gcc.h kern/lib/stdarg.h kern/lib/x86.h kern/lib/types.h
+obj/kern/pmm/MATInit/test.o: kern/pmm/MATInit/test.c kern/lib/debug.h \
+ kern/lib/stdarg.h kern/pmm/MATIntro/export.h
+obj/kern/lib/x86.o: kern/lib/x86.c kern/lib/types.h kern/lib/gcc.h \
+ kern/lib/string.h kern/lib/types.h kern/lib/x86.h

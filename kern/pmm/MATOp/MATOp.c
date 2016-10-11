@@ -24,18 +24,18 @@ palloc()
   	test = 0;
   	return temp;	
   }
+ 
   for (int i = 0x40000000 / 4096; i <= 0xF0000000 / 4096; i++)
   {
   	if (at_is_norm(i) == 1 && at_is_allocated(i) == 0)
   	{	
   		at_set_allocated(i,1);
-        return i;
+  		return i;
+  
   	}
   }
   return 0;
-} 
-
-
+}
 /**
  * Free of a physical page.
  *
