@@ -1,1 +1,0 @@
-./obj/proc/dummy/dummy
