@@ -99,11 +99,11 @@ kern_main_ap(void)
     if (cpu_idx == 1) {
         pid = proc_create (_binary___obj_user_pingpong_ping_start, 1000);
         KERN_INFO("CPU%d: process ping1 %d is created.\n", cpu_idx, pid);
-        pid2 = proc_create (_binary___obj_user_pingpong_ping_start, 1000);
+        pid2 = proc_create (_binary___obj_user_pingpong_pong_start, 1000);
         KERN_INFO("CPU%d: process ping2 %d is created.\n", cpu_idx, pid2);
     }
     else if (cpu_idx == 2) {
-        pid = proc_create (_binary___obj_user_pingpong_pong_start, 1000);
+        pid = proc_create (_binary___obj_user_pingpong_ping_start, 1000);
         KERN_INFO("CPU%d: process pong1 %d is created.\n", cpu_idx, pid);
         pid2 = proc_create (_binary___obj_user_pingpong_pong_start, 1000);
         KERN_INFO("CPU%d: process pong2 %d is created.\n", cpu_idx, pid2);

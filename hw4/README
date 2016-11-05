@@ -1,5 +1,119 @@
-List here the following info:
-1. who you have worked with; 
-2. whether you coded this assignment together, and if not, who worked on which part;
-3. brief description of what you have implemented;
-4. and anything else you would like us to know.
+implementation of the exercise 11:
+
+1. Firstly design a struct of conditional value, which only include an array with 50 length as queue.
+2. Then initialize two arrays of conditional value with length of NUM_CPUS. One is to store the waiting consume processes and the other is to store the producing consume processes. And initialize two arrays of int with length of NUM_CPUS to store the pointer of the array. So when these arrays are combined together they can be used as queues.
+3. Initialize a two-dimensional array to record the front number and tail number in each CPU.
+4. When a produce process starts, it acquires the spinlock first. If the buffer of the CPU is full, let the thread wait, which means to realease the lock, record the thread in a waiting queue and make another thread from ready queue run. Otherwise just continue. Then tail number of the CPU plus one and send signal to wake up a consume process in the CPU's consume waiting queue.  
+The same is applied to the consume process. Just some reverse.
+5. The details of wait function: update the pointer and waiting queue first. Then suspend the thread. When it is waken up, acquire the lock and return to the while loop in sys_consume or sys_produce.
+6. The details of thread_suspend function: Firstly acquire the lock for thread, and then release the lock of syscall(lock of syscall is a parameter of this function). Get new thread id from the ready queue of the CPU, make it run. Keep the scheduler busy and release the lock if the corresponding ready queue is empty. Once get the valid thread id, reacquire the lock and continue.
+7. The details of signal funtion: update the pointer and waiting queue first. Then make the thread chosen from the queue ready, which means set state as ready and put it in the corresponding ready queue.
+
+I have some bugs that I couldn't fix until submitted:
+
+1.Up to where your fork test is running:
+
+Usually it could successfully put the consume or produce process in the waiting queue and restore them when another process wake them up. And finish their consume and produce task. But then after several starts it went into trap 13.
+
+2.The reasons of problem:
+
+Just cannot figure out. The trap number 13 represents the
+general protection fault, an error related to protection mechanisms. The potential reason can be seen in the debug part.
+
+3.debug:
+
+The printing informatino from KERN_DEBUG shows that the crash happen at the kctx_switch function, which often happens during the thread_suspend function. And debug shows that sometimes the produce process were massed to the consume waiting while loop.
+Like"[D] kern/trap/TSyscall/TSyscall.c:221: consume waiting loop CPU 2: Process 2:", the process 2 is a produce process and process 3 should be there, which may cause the crash.
+The functions related to the thread restore are thread_yield and thread_suspend. They only use the thread_id as parameters. So I am confused about the change of the content of thread.
+
+```
+Output:
+
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 2: Process 2: Produced
+From cpu 1: ping started.
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 2 Process: 2
+From cpu 1: pong started.
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 1: Process 4: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 2: Process 3: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 1: Process 1: Produced
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 1 Process: 1
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 2: Process 2: Produced
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 2 Process: 2
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 1: Process 1: Produced
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 2: Process 2: Produced
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 1 Process: 1
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 1: Process 1: Produced
+[D] kern/trap/TSyscall/TSyscall.c:181: produce waiting loop CPU: 2 Process: 2
+[D] kern/thread/PThread/PThread.c:122: old_cur_pid: 2, new_cur_pid: 3
+[D] kern/thread/PThread/PThread.c:124: after release lock 3
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 1: Process 4
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 1: Process 4: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:288: signal weak id 2:
+[D] kern/thread/PThread/PThread.c:140: inside thread_make_ready acquire lock id: 2
+[D] kern/thread/PThread/PThread.c:141: inside thread_make_ready acquire lock  Cpu 2 , process_id : 3
+[D] kern/thread/PThread/PThread.c:146: make ready 2
+[D] kern/thread/PThread/PThread.c:126: after switch kctx lk 2
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 2: Process 3
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 1 Process: 1
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 2: Process 3: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 2: Process 3
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 2: Process 3: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 1: Process 1: Produced
+[D] kern/trap/TSyscall/TSyscall.c:221: consume waiting loop CPU 2: Process 3:
+[D] kern/thread/PThread/PThread.c:122: old_cur_pid: 3, new_cur_pid: 2
+[D] kern/thread/PThread/PThread.c:124: after release lock 2
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 1: Process 4
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 1: Process 4: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:272: CPU 2: Process 2: get lock after suspend
+[D] kern/trap/TSyscall/TSyscall.c:281: wake a consume process id:  3
+[D] kern/thread/PThread/PThread.c:140: inside thread_make_ready acquire lock id: 3
+[D] kern/thread/PThread/PThread.c:141: inside thread_make_ready acquire lock  Cpu 2 , process_id : 2
+[D] kern/thread/PThread/PThread.c:146: make ready 3
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 2 Process: 2
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 2: Process 2: Produced
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 1: Process 4
+[D] kern/thread/PThread/PThread.c:126: after switch kctx lk 3
+[D] kern/trap/TSyscall/TSyscall.c:272: CPU 2: Process 3: get lock after suspend
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 2: Process 3
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 1: Process 4: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:221: consume waiting loop CPU 1: Process 4:
+[D] kern/thread/PThread/PThread.c:122: old_cur_pid: 4, new_cur_pid: 1
+[D] kern/thread/PThread/PThread.c:124: after release lock 1
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 2: Process 3: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:281: wake a consume process id:  4
+[D] kern/thread/PThread/PThread.c:140: inside thread_make_ready acquire lock id: 4
+[D] kern/thread/PThread/PThread.c:141: inside thread_make_ready acquire lock  Cpu 1 , process_id : 1
+[D] kern/thread/PThread/PThread.c:146: make ready 4
+[D] kern/trap/TSyscall/TSyscall.c:198: produce: after signal  CPU: 1 Process: 1
+[D] kern/trap/TSyscall/TSyscall.c:171: CPU 1: Process 1: Produced
+[D] kern/trap/TSyscall/TSyscall.c:221: consume waiting loop CPU 2: Process 2:
+[D] kern/thread/PThread/PThread.c:122: old_cur_pid: 2, new_cur_pid: 3
+[D] kern/thread/PThread/PThread.c:124: after release lock 3
+[D] kern/thread/PThread/PThread.c:126: after switch kctx lk 4
+[D] kern/trap/TSyscall/TSyscall.c:272: CPU 1: Process 4: get lock after suspend
+[D] kern/trap/TTrapHandler/TTrapHandler.c:23: trapframe at 97bea8
+[D] kern/trap/TSyscall/TSyscall.c:239: consume: after signal  CPU 1: Process 4
+[D] kern/trap/TTrapHandler/TTrapHandler.c:24:     0097bea8:	edi:   		00000000
+[D] kern/trap/TTrapHandler/TTrapHandler.c:25: 	0097beac:	esi:   		00000003
+[D] kern/trap/TTrapHandler/TTrapHandler.c:26: 	0097beb0:	ebp:   		efffffe8
+[D] kern/trap/TTrapHandler/TTrapHandler.c:27: 	0097beb4:	esp:   		0097bec8
+[D] kern/trap/TTrapHandler/TTrapHandler.c:28: 	0097beb8:	ebx:   		00000002
+[D] kern/trap/TTrapHandler/TTrapHandler.c:29: 	0097bebc:	edx:   		00dfc048
+[D] kern/trap/TTrapHandler/TTrapHandler.c:30: 	0097bec0:	ecx:   		00106582
+[D] kern/trap/TTrapHandler/TTrapHandler.c:31: 	0097bec4:	eax:   		00000000
+[D] kern/trap/TTrapHandler/TTrapHandler.c:32: 	0097bec8:	es:    		00000010
+[D] kern/trap/TTrapHandler/TTrapHandler.c:33: 	0097becc:	ds:    		00000010
+[D] kern/trap/TSyscall/TSyscall.c:212: CPU 1: Process 1: Consumed
+[D] kern/trap/TSyscall/TSyscall.c:221: consume waiting loop CPU 1: Process 1:
+[D] kern/thread/PThread/PThread.c:122: old_cur_pid: 1, new_cur_pid: 4
+[D] kern/thread/PThread/PThread.c:124: after release lock 4
+[D] kern/trap/TTrapHandler/TTrapHandler.c:34: 	0097bed0:	trapno:		0000000d
+[D] kern/trap/TTrapHandler/TTrapHandler.c:35: 	0097bed4:	err:   		0000384c
+[D] kern/trap/TTrapHandler/TTrapHandler.c:36: 	0097bed8:	eip:   		00000003
+[D] kern/trap/TTrapHandler/TTrapHandler.c:37: 	0097bedc:	cs:    		00000008
+[D] kern/trap/TTrapHandler/TTrapHandler.c:38: 	0097bee0:	eflags:		00000006
+[D] kern/trap/TTrapHandler/TTrapHandler.c:39: 	0097bee4:	esp:   		0010384e
+[D] kern/trap/TTrapHandler/TTrapHandler.c:40: 	0097bee8:	ss:    		0000ee78
+[P] kern/trap/TTrapHandler/TTrapHandler.c:50: Trap 13 @ 0x00000003.
+
+```

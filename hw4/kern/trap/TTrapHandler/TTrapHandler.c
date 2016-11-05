@@ -11,6 +11,8 @@
 
 #include "import.h"
 
+static unsigned int saved_tid[NUM_CPUS];
+
 static void trap_dump(tf_t *tf)
 {
 	if (tf == NULL)
@@ -99,6 +101,7 @@ static int spurious_intr_handler (void)
 static int timer_intr_handler (void)
 {
     intr_eoi ();
+    sched_update();
     return 0;
 }
 
@@ -139,21 +142,33 @@ void trap (tf_t *tf)
     unsigned int cur_pid;
     unsigned int in_kernel;
 
+
     cur_pid = get_curid ();
+    saved_tid[get_pcpu_idx()] = cur_pid;
     set_pdir_base (0); //switch to the kernel's page table.
 
     trap_cb_t f;
 
     f = TRAP_HANDLER[get_pcpu_idx()][tf->trapno];
 
-    if (f){
+     if (f){
             f(tf);
     } else {
             KERN_WARN("No handler for user trap 0x%x, process %d, eip 0x%08x. \n",
                             tf->trapno, cur_pid, tf->eip);
     }
+    
+    if (saved_tid[get_pcpu_idx()] != get_curid())
+    {	
+    	// KERN_WARN("cur_pid: %d",get_curid());
+    	kstack_switch(cur_pid);	
+    }
+    if (cur_pid != 0)
+    {
+    	set_pdir_base(cur_pid);
+    }
+    
+    trap_return((void *) tf);
+    
 
-    kstack_switch(cur_pid);
-    set_pdir_base(cur_pid);
-	  trap_return((void *) tf);
 }

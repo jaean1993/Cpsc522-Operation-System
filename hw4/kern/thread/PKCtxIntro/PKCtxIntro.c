@@ -1,5 +1,5 @@
 #include <lib/x86.h>
-
+#include <lib/debug.h>
 /**
  * Kernel thread context.
  * When you switch to another kernel thread, you need to save
@@ -34,6 +34,6 @@ extern void cswitch(struct kctx *from_kctx, struct kctx *to_kctx);
  * for thread # [to_pid].
  */
 void kctx_switch(unsigned int from_pid, unsigned int to_pid)
-{
+{	
 	cswitch(&kctx_pool[from_pid], &kctx_pool[to_pid]);
 }

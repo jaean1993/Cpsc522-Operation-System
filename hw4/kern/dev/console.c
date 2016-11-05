@@ -10,11 +10,14 @@
 
 #define BUFLEN 1024
 static char linebuf[BUFLEN];
+static spinlock_t console_lock;
 
 struct {
 	char buf[CONSOLE_BUFFER_SIZE];
 	uint32_t rpos, wpos;
 } cons;
+
+
 
 void
 cons_init()
@@ -22,11 +25,13 @@ cons_init()
 	memset(&cons, 0x0, sizeof(cons));
 	serial_init();
 	video_init();
+  spinlock_init(&console_lock);
 }
 
 void
 cons_intr(int (*proc)(void))
-{
+{ 
+  spinlock_acquire(&console_lock);
 	int c;
 
 	while ((c = (*proc)()) != -1) {
@@ -36,7 +41,7 @@ cons_intr(int (*proc)(void))
 		if (cons.wpos == CONSOLE_BUFFER_SIZE)
 			cons.wpos = 0;
 	}
-
+  spinlock_release(&console_lock);
 }
 
 char
@@ -50,15 +55,16 @@ cons_getc(void)
   // (e.g., when called from the kernel monitor).
   serial_intr();
   keyboard_intr();
-
+  spinlock_acquire(&console_lock);
   // grab the next character from the input buffer.
   if (cons.rpos != cons.wpos) {
     c = cons.buf[cons.rpos++];
     if (cons.rpos == CONSOLE_BUFFER_SIZE)
       cons.rpos = 0;
+    spinlock_release(&console_lock);
     return c;
   }
-
+  spinlock_release(&console_lock);
   return 0;
 }
 

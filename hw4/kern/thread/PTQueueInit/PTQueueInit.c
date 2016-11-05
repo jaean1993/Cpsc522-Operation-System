@@ -1,5 +1,5 @@
 #include "lib/x86.h"
-
+#include <lib/debug.h>
 #include "import.h"
 
 /**
@@ -26,9 +26,10 @@ void tqueue_init(unsigned int mbi_addr)
  * Hint: there are multiple cases in this function.
  */
 void tqueue_enqueue(unsigned int chid, unsigned int pid)
-{
+{	
+	// KERN_DEBUG("here\n");
 	unsigned int tail;
-
+	
 	tail = tqueue_get_tail(chid);
 
 	if (tail == NUM_IDS) {
@@ -42,6 +43,7 @@ void tqueue_enqueue(unsigned int chid, unsigned int pid)
 		tcb_set_next(pid, NUM_IDS);
 		tqueue_set_tail(chid, pid);
 	}
+	// KERN_DEBUG("inside tqueue_enqueue  Cpu %d , process_id : %d \n", get_pcpu_idx(),get_curid());
 }
 
 /**

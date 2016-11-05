@@ -38,6 +38,33 @@ trap_init(unsigned int cpu_idx){
 
   // TODO: for CPU # [cpu_idx], register appropriate trap handler for each trap number,
   // with trap_handler_register function defined above.
+	trap_handler_register(cpu_idx, T_DIVIDE, exception_handler);
+	trap_handler_register(cpu_idx, T_DEBUG, exception_handler);
+	trap_handler_register(cpu_idx, T_NMI, exception_handler);
+	trap_handler_register(cpu_idx, T_BRKPT, exception_handler);
+	trap_handler_register(cpu_idx, T_OFLOW, exception_handler);
+	trap_handler_register(cpu_idx, T_BOUND, exception_handler);
+	trap_handler_register(cpu_idx, T_ILLOP, exception_handler);
+	trap_handler_register(cpu_idx, T_DEVICE, exception_handler);
+	trap_handler_register(cpu_idx, T_DBLFLT, exception_handler);
+	trap_handler_register(cpu_idx, T_COPROC, exception_handler);
+	trap_handler_register(cpu_idx, T_TSS, exception_handler);
+	trap_handler_register(cpu_idx, T_SEGNP, exception_handler);
+	trap_handler_register(cpu_idx, T_STACK, exception_handler);
+	trap_handler_register(cpu_idx, T_GPFLT, exception_handler);
+	trap_handler_register(cpu_idx, T_PGFLT, exception_handler);
+	trap_handler_register(cpu_idx, T_RES, exception_handler);
+	trap_handler_register(cpu_idx, T_FPERR, exception_handler);
+	trap_handler_register(cpu_idx, T_ALIGN, exception_handler);
+	trap_handler_register(cpu_idx, T_MCHK, exception_handler);
+	trap_handler_register(cpu_idx, T_SIMD, exception_handler);
+	trap_handler_register(cpu_idx, T_SECEV, exception_handler);
+
+	trap_handler_register(cpu_idx, T_SYSCALL, syscall_dispatch);
+
+	trap_handler_register(cpu_idx, T_IRQ0+IRQ_TIMER, interrupt_handler);
+  	trap_handler_register(cpu_idx, T_IRQ0+IRQ_KBD, interrupt_handler);
+  	trap_handler_register(cpu_idx, T_IRQ0+IRQ_SERIAL13, interrupt_handler);
 
 	if (cpu_idx == 0){
 		KERN_INFO("[BSP KERN] Done.\n");
