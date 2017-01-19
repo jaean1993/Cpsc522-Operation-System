@@ -9,8 +9,8 @@
 
 #include "import.h"
 
-#define MAX_ARRAY_LEN 50
-#define MAX_BUFFER_LEN 2
+#define MAX_ARRAY_LEN 100
+#define MAX_BUFFER_LEN 10
 
 static char sys_buf[NUM_IDS][PAGESIZE];
 
@@ -213,7 +213,7 @@ void sys_consume(tf_t *tf)
 	intr_local_enable();
 	spinlock_acquire(&lock);
 	intr_local_disable();
-	// KERN_DEBUG("consume; after acquire lock  CPU %d: Process %d \n", get_pcpu_idx(), get_curid());
+	KERN_DEBUG("consume; after acquire lock  CPU %d: Process %d \n", get_pcpu_idx(), get_curid());
 	intr_local_enable();
 
 	while (front_end[cur_pid][0] == front_end[cur_pid][1]) {
